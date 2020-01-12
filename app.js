@@ -2,10 +2,25 @@ const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const fs = require('fs')
 const fetch = require("node-fetch");
-const movies = require('./movies')
 
-const AnimationUrl1 = 'https://media.giphy.com/media/ya4eevXU490Iw/giphy.gif'
-const AnimationUrl2 = 'https://media.giphy.com/media/LrmU6jXIjwziE/giphy.gif'
+const moviesJSON_get = () => {
+    fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+      if (err){
+          console.log(err);
+      } else {
+      obj = JSON.parse(data); //now it an object
+      obj.table.push({id: 2, square:3}); //add some data
+      json = JSON.stringify(obj); //convert it back to json
+      fs.writeFile('myjsonfile.json', json, 'utf8', callback); // write it back
+  }});
+
+
+  const moviesJSON = require('../movies/movies.json');
+  console.log(moviesJSON)
+  if (moviesJSON.length === 0)  var movies = {table: []}
+  else var movies = JSON.parse(moviesJSON);
+  return movies;
+}
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.on('text', async (ctx) => {
@@ -14,16 +29,28 @@ bot.on('text', async (ctx) => {
     const ombdRes = await fetch(`http://www.omdbapi.com/?i=${message.text.match(/tt\d{4,}/)}&apikey=f042cb95`)
                           .then(res => res.json())
                           .catch(err => console.log(err))
-    const movie = {
-      userId: message.from.id,
-      imdbId: ombdRes.imdbID,
-      title: ombdRes.Title,
-      year: ombdRes.Year,
-      poster: ombdRes.Poster,
-      runtime: ombdRes.Runtime
-    }
-    movies.push(movie)
-    console.log(movies)
+    if (ombdRes.Error) return ctx.reply('ti pidor!');
+    await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+        if (!err){
+          var obj = JSON.parse(data); //now it an object
+        } else {
+          var obj = { table: [] }
+        }
+        const movie = {
+          userId: message.from.id,
+          imdbId: ombdRes.imdbID,
+          title: ombdRes.Title,
+          year: ombdRes.Year,
+          poster: ombdRes.Poster,
+          runtime: ombdRes.Runtime
+        }
+        obj.table.push(movie);
+        json = JSON.stringify(obj); //convert it back to json
+        fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
+                                                              if (err) throw err;
+                                                              console.log('complete');
+                                                            }); // write it back
+    });
     return ctx.reply('успех!')
   }
   return ctx.reply('ti pidor!')
