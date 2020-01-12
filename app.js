@@ -3,24 +3,6 @@ const Extra = require('telegraf/extra')
 const fs = require('fs')
 const fetch = require("node-fetch");
 
-const moviesJSON_get = () => {
-    fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
-      if (err){
-          console.log(err);
-      } else {
-      obj = JSON.parse(data); //now it an object
-      obj.table.push({id: 2, square:3}); //add some data
-      json = JSON.stringify(obj); //convert it back to json
-      fs.writeFile('myjsonfile.json', json, 'utf8', callback); // write it back
-  }});
-
-
-  const moviesJSON = require('../movies/movies.json');
-  console.log(moviesJSON)
-  if (moviesJSON.length === 0)  var movies = {table: []}
-  else var movies = JSON.parse(moviesJSON);
-  return movies;
-}
 
 const bot = new Telegraf('812788041:AAFCpftJNJfdOpFiTcvFzdnB6nAh7WOB1y4')
 bot.on('text', async (ctx) => {
