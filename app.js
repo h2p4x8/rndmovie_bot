@@ -22,7 +22,7 @@ const moviesJSON_get = () => {
   return movies;
 }
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf('812788041:AAFCpftJNJfdOpFiTcvFzdnB6nAh7WOB1y4')
 bot.on('text', async (ctx) => {
   const message = ctx.message;
   if (message.text.match(/imdb/g)&&message.text.match(/title/g)) {
