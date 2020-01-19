@@ -12,10 +12,8 @@ bot.command('random', async (ctx) => {
         return ctx.reply('lack of movies faggot!!')
       } else {
         const moviesArray = JSON.parse(data).table;
-        console.log(moviesArray)
         if (moviesArray.length === 0) return ctx.reply('lack of movies faggot!')
         const mapUsers = new Set(moviesArray.map(el => el.userId));
-        console.log(mapUsers);
         const preFinalArray = [];
         mapUsers.forEach(el => {
            const arr = moviesArray.filter(movie => movie.userId === el);
@@ -38,7 +36,6 @@ bot.command('random', async (ctx) => {
         json = JSON.stringify(obj); //convert it back to json
         fs.writeFile('movies.json', json, 'utf8', function(err) {
                                                                 if (err) throw err;
-                                                                      console.log('complete');
                                                                 }); // write it back
         //message.from.id
       }
@@ -80,7 +77,6 @@ bot.on('text', async (ctx) => {
       json = JSON.stringify(obj); //convert it back to json
       fs.writeFile('movies.json', json, 'utf8', function(err) {
                                                             if (err) throw err;
-                                                            console.log('complete');
                                                           }); // write it back
     return ctx.reply('movie added')
   });
