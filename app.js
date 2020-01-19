@@ -3,36 +3,56 @@ const Extra = require('telegraf/extra')
 const fs = require('fs')
 const fetch = require("node-fetch");
 
-const moviesJSON_get = () => {
-    fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
-      if (err){
-          console.log(err);
-      } else {
-      obj = JSON.parse(data); //now it an object
-      obj.table.push({id: 2, square:3}); //add some data
-      json = JSON.stringify(obj); //convert it back to json
-      fs.writeFile('myjsonfile.json', json, 'utf8', callback); // write it back
-  }});
-
-
-  const moviesJSON = require('../movies/movies.json');
-  console.log(moviesJSON)
-  if (moviesJSON.length === 0)  var movies = {table: []}
-  else var movies = JSON.parse(moviesJSON);
-  return movies;
-}
-
 const bot = new Telegraf('812788041:AAFCpftJNJfdOpFiTcvFzdnB6nAh7WOB1y4')
+
+bot.command('random', async (ctx) => {
+  const moviesArray = await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+      if (err){
+        console.log(err)
+        return ctx.reply('lack of movies faggot!!')
+      } else {
+        const moviesArray = JSON.parse(data).table;
+        console.log(moviesArray)
+        if (moviesArray.length === 0) return ctx.reply('lack of movies faggot!')
+        const mapUsers = new Set(moviesArray.map(el => el.userId));
+        console.log(mapUsers);
+        const preFinalArray = [];
+        mapUsers.forEach(el => {
+           const arr = moviesArray.filter(movie => movie.userId === el);
+           preFinalArray.push(arr[Math.floor(Math.random()*arr.length)]);
+        })
+
+        const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length)];
+        console.log(finalMovie);
+        ctx.replyWithPhoto(
+            finalMovie.poster,
+            Extra.caption(`${finalMovie.title} (${finalMovie.year}) - ${finalMovie.runtime}`).markdown())
+        moviesArray.splice(moviesArray.findIndex(el => el.imdbId === finalMovie.imdbId), 1)
+        const obj = {
+          table: moviesArray
+        }
+        json = JSON.stringify(obj); //convert it back to json
+        fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
+                                                                if (err) throw err;
+                                                                      console.log('complete');
+                                                                }); // write it back
+        //message.from.id
+      }
+  });
+
+})
+
 bot.on('text', async (ctx) => {
   const message = ctx.message;
   if (message.text.match(/imdb/g)&&message.text.match(/title/g)) {
     const ombdRes = await fetch(`http://www.omdbapi.com/?i=${message.text.match(/tt\d{4,}/)}&apikey=f042cb95`)
                           .then(res => res.json())
                           .catch(err => console.log(err))
-    if (ombdRes.Error) return ctx.reply('ti pidor!');
+    if (ombdRes.Error) return ctx.reply('imdb faggot!');
     await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
         if (!err){
           var obj = JSON.parse(data); //now it an object
+          if (obj.table.find(el => el.imdbId === ombdRes.imdbID)) return ctx.reply('multiple faggot!');
         } else {
           var obj = { table: [] }
         }
@@ -50,10 +70,12 @@ bot.on('text', async (ctx) => {
                                                               if (err) throw err;
                                                               console.log('complete');
                                                             }); // write it back
+      return ctx.reply('movie added')
     });
-    return ctx.reply('успех!')
+
   }
-  return ctx.reply('ti pidor!')
+  else return ctx.reply('u faggot!');
+
 })
 
 // bot.command('add')
