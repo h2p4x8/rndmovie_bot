@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 const bot = new Telegraf('812788041:AAFCpftJNJfdOpFiTcvFzdnB6nAh7WOB1y4')
 
 bot.command('random', async (ctx) => {
-  const moviesArray = await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+  const moviesArray = await fs.readFile('movies.json', 'utf8', function readFileCallback(err, data){
       if (err){
         console.log(err)
         return ctx.reply('lack of movies faggot!!')
@@ -36,7 +36,7 @@ bot.command('random', async (ctx) => {
           table: moviesArray
         }
         json = JSON.stringify(obj); //convert it back to json
-        fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
+        fs.writeFile('movies.json', json, 'utf8', function(err) {
                                                                 if (err) throw err;
                                                                       console.log('complete');
                                                                 }); // write it back
@@ -61,7 +61,7 @@ bot.on('text', async (ctx) => {
     if (ombdRes.Error) return ctx.reply('no such title faggot!');
     // http://www.omdbapi.com/?t=The+Turkey+Bowl
   }
-  await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+  await fs.readFile('movies.json', 'utf8', function readFileCallback(err, data){
       if (!err){
         var obj = JSON.parse(data); //now it an object
         if (obj.table.find(el => el.imdbId === ombdRes.imdbID)) return ctx.reply('multiple faggot!');
@@ -78,7 +78,7 @@ bot.on('text', async (ctx) => {
       }
       obj.table.push(movie);
       json = JSON.stringify(obj); //convert it back to json
-      fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
+      fs.writeFile('movies.json', json, 'utf8', function(err) {
                                                             if (err) throw err;
                                                             console.log('complete');
                                                           }); // write it back
