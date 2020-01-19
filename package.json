@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node_modules/.bin/nodenv app.js"
+    "start": "node_modules/.bin/nodenv app.js",
+    "build": "node app.js"
   },
   "author": "",
   "license": "ISC",
