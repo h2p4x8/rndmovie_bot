@@ -23,10 +23,14 @@ bot.command('random', async (ctx) => {
         })
 
         const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length)];
-        console.log(finalMovie);
-        ctx.replyWithPhoto(
-            finalMovie.poster,
-            Extra.caption(`${finalMovie.title} (${finalMovie.year}) - ${finalMovie.runtime}`).markdown())
+        if (finalMovie.poster !== 'N/A') {
+          ctx.replyWithPhoto(
+              finalMovie.poster,
+              Extra.caption(`${finalMovie.title} (${finalMovie.year}) - ${finalMovie.runtime}`).markdown())
+        } else {
+          ctx.reply(`${finalMovie.title} (${finalMovie.year}) - ${finalMovie.runtime}`)
+        }
+
         moviesArray.splice(moviesArray.findIndex(el => el.imdbId === finalMovie.imdbId), 1)
         const obj = {
           table: moviesArray
@@ -45,37 +49,41 @@ bot.command('random', async (ctx) => {
 bot.on('text', async (ctx) => {
   const message = ctx.message;
   if (message.text.match(/imdb/g)&&message.text.match(/title/g)) {
-    const ombdRes = await fetch(`http://www.omdbapi.com/?i=${message.text.match(/tt\d{4,}/)}&apikey=f042cb95`)
+    var ombdRes = await fetch(`http://www.omdbapi.com/?i=${message.text.match(/tt\d{4,}/)}&apikey=f042cb95`)
                           .then(res => res.json())
                           .catch(err => console.log(err))
     if (ombdRes.Error) return ctx.reply('imdb faggot!');
-    await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
-        if (!err){
-          var obj = JSON.parse(data); //now it an object
-          if (obj.table.find(el => el.imdbId === ombdRes.imdbID)) return ctx.reply('multiple faggot!');
-        } else {
-          var obj = { table: [] }
-        }
-        const movie = {
-          userId: message.from.id,
-          imdbId: ombdRes.imdbID,
-          title: ombdRes.Title,
-          year: ombdRes.Year,
-          poster: ombdRes.Poster,
-          runtime: ombdRes.Runtime
-        }
-        obj.table.push(movie);
-        json = JSON.stringify(obj); //convert it back to json
-        fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
-                                                              if (err) throw err;
-                                                              console.log('complete');
-                                                            }); // write it back
-      return ctx.reply('movie added')
-    });
-
   }
-  else return ctx.reply('u faggot!');
-
+  else {
+    var ombdRes = await fetch(`http://www.omdbapi.com/?t=${message.text.replace(' ', '+')}&apikey=f042cb95`)
+                          .then(res => res.json())
+                          .catch(err => console.log(err))
+    if (ombdRes.Error) return ctx.reply('no such title faggot!');
+    // http://www.omdbapi.com/?t=The+Turkey+Bowl
+  }
+  await fs.readFile('../movies/movies.json', 'utf8', function readFileCallback(err, data){
+      if (!err){
+        var obj = JSON.parse(data); //now it an object
+        if (obj.table.find(el => el.imdbId === ombdRes.imdbID)) return ctx.reply('multiple faggot!');
+      } else {
+        var obj = { table: [] }
+      }
+      const movie = {
+        userId: message.from.id,
+        imdbId: ombdRes.imdbID,
+        title: ombdRes.Title,
+        year: ombdRes.Year,
+        poster: ombdRes.Poster,
+        runtime: ombdRes.Runtime
+      }
+      obj.table.push(movie);
+      json = JSON.stringify(obj); //convert it back to json
+      fs.writeFile('../movies/movies.json', json, 'utf8', function(err) {
+                                                            if (err) throw err;
+                                                            console.log('complete');
+                                                          }); // write it back
+    return ctx.reply('movie added')
+  });
 })
 
 // bot.command('add')
