@@ -45,6 +45,7 @@ bot.command('random', async (ctx) => {
 
 bot.on('text', async (ctx) => {
   const message = ctx.message;
+  if (!message.text.match(/\w/g)) return ctx.reply('in english faggot!');
   if (message.text.match(/imdb/g)&&message.text.match(/title/g)) {
     var ombdRes = await fetch(`http://www.omdbapi.com/?i=${message.text.match(/tt\d{4,}/)}&apikey=f042cb95`)
                           .then(res => res.json())
