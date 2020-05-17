@@ -1,4 +1,4 @@
-FROM arm64v8/node:current-slim
+FROM arm64v8/node:current-buster-slim
 
 WORKDIR /usr/src/app
 COPY package.json .
