@@ -4,7 +4,7 @@
   "main": "app.js",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "telegraf": "^3.35.0"
   },
   "devDependencies": {
