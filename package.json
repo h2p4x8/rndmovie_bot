@@ -11,7 +11,6 @@
     "node-env-run": "^3.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules/.bin/nodenv app.js",
     "build": "node app.js"
   },

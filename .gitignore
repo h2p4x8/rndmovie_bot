@@ -1,1 +1,4 @@
 movies.json
+node_modules
+.idea
+.env

@@ -9,7 +9,7 @@ bot.command('random', async (ctx) => {
   const moviesArray = await fs.readFile('movies.json', 'utf8', function readFileCallback(err, data){
       if (err){
         console.log(err)
-        return ctx.reply('lack of movies faggot!!')
+        return ctx.reply('no movies json faggot!!')
       } else {
         const moviesArray = JSON.parse(data).table;
         if (moviesArray.length === 0) return ctx.reply('lack of movies faggot!')
@@ -19,7 +19,6 @@ bot.command('random', async (ctx) => {
            const arr = moviesArray.filter(movie => movie.userId === el);
            preFinalArray.push(arr[Math.floor(Math.random()*arr.length)]);
         })
-
         const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length)];
         if (finalMovie.poster !== 'N/A') {
           ctx.replyWithPhoto(
