@@ -17,7 +17,7 @@ bot.command('random', async (ctx) => {
         const preFinalArray = [];
         mapUsers.forEach(el => {
            const arr = moviesArray.filter(movie => movie.userId === el);
-           preFinalArray.push(arr[Math.floor(Math.random()*arr.length)]);
+           preFinalArray.push(arr[Math.floor(Math.random()*arr.length+1)]);
         })
         const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length)];
         if (finalMovie.poster !== 'N/A') {
