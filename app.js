@@ -19,7 +19,7 @@ bot.command('random', async (ctx) => {
            const arr = moviesArray.filter(movie => movie.userId === el);
            preFinalArray.push(arr[Math.floor(Math.random()*arr.length+1)]);
         })
-        const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length)];
+        const finalMovie = preFinalArray[Math.floor(Math.random()*preFinalArray.length+1)];
         if (finalMovie.poster !== 'N/A') {
           ctx.replyWithPhoto(
               finalMovie.poster,
